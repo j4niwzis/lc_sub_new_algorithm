@@ -1,0 +1,14 @@
+def true = \t.\f. t;;
+def false = \t.\f. f;;
+
+def pair = \a.\b.\c. c a b;;
+
+def second = \p. p false;;
+
+def stream = rec stream = \f.\x.\c. c (f x) (stream f (f x));;
+
+def sub_init = \b.\f.\x.
+  pair x (b (pair x) (stream f x));;
+
+def sub = \a.\b.\f.\x.
+  (a second (sub_init b f x)) true;;
