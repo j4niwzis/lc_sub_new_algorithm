@@ -45,6 +45,14 @@ def bigger = \a.\b. (sub a b (\x. T) F);;
 
 def lesser = \a.\b. (sub b a (\x. T) F);;
 
+def div_stream = (Y \div_stream.
+  (\b.\f.\x. (b (pair x) (div_stream b f (f x) )))
+);;
+
+def div_init = div_stream;;
+
+def div2 = \a.\b.\f.\x. ((a second (div_init b f x)) T);;
+
 def to_int = \n. (n (\x.x + 1) 0 );;
 
 (to_int (sub ten five));; {5}
@@ -55,3 +63,5 @@ def to_int = \n. (n (\x.x + 1) 0 );;
 (bigger five five 1 0);; {0}
 (lesser four five 1 0);; {1}
 (lesser five five 1 0);; {0}
+(to_int (div2 ten two));; {5}
+(to_int (div2 ten three));; {3}
