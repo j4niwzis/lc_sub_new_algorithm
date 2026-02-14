@@ -1,14 +1,17 @@
-def true = \t.\f. t;;
-def false = \t.\f. f;;
+def A = \x.\y.(y (x x y));;
+def Y = (A A);;
 
-def pair = \a.\b.\c. c a b;;
+def T = \t.\f. (t);;
+def F = \t.\f. (f);;
 
-def second = \p. p false;;
+def pair = \a.\b.\c. (c a b);;
 
-def stream = rec stream = \f.\x.\c. c (f x) (stream f (f x));;
+def second = \p. (p F);;
+
+def stream = (Y \stream.(\f.\x.\c. (c (f x) (stream f (f x)))));;
 
 def sub_init = \b.\f.\x.
-  pair x (b (pair x) (stream f x));;
+  (pair x (b (pair x) (stream f x)));;
 
 def sub = \a.\b.\f.\x.
-  (a second (sub_init b f x)) true;;
+  ((a second (sub_init b f x)) T);;
