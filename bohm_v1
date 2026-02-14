@@ -48,6 +48,7 @@ def lesser = \a.\b. (sub b a (\x. T) F);;
 def to_int = \n. (n (\x.x + 1) 0 );;
 
 (to_int (sub ten five));; {5}
+(to_int (pred ten));; {9}
 (eq ten ten 1 0);; {1}
 (eq ten five 1 0);; {0}
 (bigger six five 1 0);; {1}
