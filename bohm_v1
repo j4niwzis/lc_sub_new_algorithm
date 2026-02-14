@@ -8,36 +8,49 @@ def two   = \f. \x. (f (f x));;
 def three = \f. \x. (f (f (f x)));;
 def four  = \f. \x. (f (f (f (f x))));;
 def five  = \f. \x. (f (f (f (f (f x)))));;
-def six = \x.\y.(x (x (x (x (x (x y))))));;
-def seven = \x.\y.(x (x (x (x (x (x (x y)))))));;
-def eight = \x.\y.(x (x (x (x (x (x (x (x y))))))));;
-def nine = \x.\y.(x (x (x (x (x (x (x (x (x y)))))))));;
-def ten  = \x.\y.(x (x (x (x (x (x (x (x (x (x y))))))))));;
+def six   = \f .\x. (f (f (f (f (f (f x))))));;
+def seven = \f .\x. (f (f (f (f (f (f (f x)))))));;
+def eight = \f .\x. (f (f (f (f (f (f (f (f x))))))));;
+def nine  = \f .\x. (f (f (f (f (f (f (f (f (f x)))))))));;
+def ten   = \f .\x. (f (f (f (f (f (f (f (f (f (f x))))))))));;
 
-def x10 = \num. \f. (num (\x. (ten f x) ));;
+def T = \t.\f. (t);;
+def F = \t.\f. (f);;
 
-def test_number = (x10 (x10 (x10 ten)));;
+def pair = \a.\b.\c. (c a b);;
+
+def second = \p. (p F);;
+
+def stream = (Y \stream.(\f.\x.\c. (c (f x) (stream f (f x)))));;
+
+def sub_init = \b.\f.\x.
+  (pair x (b (pair x) (stream f x)));;
+
+def sub = \a.\b.\f.\x.
+  ((a second (sub_init b f x)) T);;
+
+def pred_init = \f.\x. (pair x (pair x (stream f x)));;
+
+def pred = \a.\f.\x. ((a second (pred_init f x)) T);;
+
+def eq_stream = (Y \eq_stream.
+  \c. (c F eq_stream )
+);;
+
+def eq_init = \b. (b (pair F) (pair T eq_stream));;
+
+def eq = \a.\b. ((a second (eq_init b)) T);;
+
+def bigger = \a.\b. (sub a b (\x. T) F);;
+
+def lesser = \a.\b. (sub b a (\x. T) F);;
 
 def to_int = \n. (n (\x.x + 1) 0 );;
 
-{Booleans}
-def T = \t.\f.t;;
-def F = \t.\f.f;;
-
-{Helper for predecessor structure}
-def pred_nested = \x. \next. \c. (c x next);;
-
-def pred_step = (Y (\s. \f. \acc. \c. ( c (f acc) (s f (f acc)))));;
-
-def pred_step_test = (pred_step (\x.x + 1) 0 F);;
-
-def pred_nested_fn = \f. \x. (pred_nested x (pred_nested x (pred_step f x)) );;
-
-def pred_fn = \v. (v F);;
-
-def pred = \num. \f. \x. ((num pred_fn (pred_nested_fn f x)) T);;
-
-def sub_nested_fn = \n. \f. \x. (pred_nested x (n (pred_nested x) (pred_step f x) )) ;;
-
-def sub = \first. \second. \f. \x. (first pred_fn (sub_nested_fn second f x) T);;
-
+(to_int (sub ten five));; {5}
+(eq ten ten 1 0);; {1}
+(eq ten five 1 0);; {0}
+(bigger six five 1 0);; {1}
+(bigger five five 1 0);; {0}
+(lesser four five 1 0);; {1}
+(lesser five five 1 0);; {0}
